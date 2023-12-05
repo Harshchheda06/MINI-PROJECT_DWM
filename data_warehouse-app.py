@@ -7,8 +7,8 @@ from sklearn.svm import OneClassSVM
 from mlxtend.frequent_patterns import apriori, association_rules
 
 # Function to perform a basic data mining operation (mean calculation)
-def calculate_mean(data):
-    return data.mean()
+def calculate_mean(data, target_column):
+    return data[target_column].mean()
 
 # Function to perform clustering using K-Means
 def perform_clustering(data):
@@ -70,7 +70,7 @@ def main():
         operation = st.selectbox("Select Data Mining Operation", ["Mean", "Clustering", "Classification", "Association Rule Mining", "Regression", "Outlier Detection"])
 
         # User input for target column
-        if operation in ["Classification", "Regression"]:
+        if operation in ["Classification", "Regression", "Mean"]:
             target_column = st.selectbox("Select Target Column", df.columns)
 
         # User input for independent columns (for regression)
@@ -81,7 +81,7 @@ def main():
         # Perform data mining operation
         if st.button("Perform Operation"):
             if operation == "Mean":
-                result = calculate_mean(df)
+                result = calculate_mean(df, target_column)
             elif operation == "Clustering":
                 result = perform_clustering(df)
             elif operation == "Classification":
