@@ -1,6 +1,8 @@
 # Import necessary libraries
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.svm import OneClassSVM
@@ -8,7 +10,16 @@ from mlxtend.frequent_patterns import apriori, association_rules
 
 # Function to perform a basic data mining operation (mean calculation)
 def calculate_mean(data, target_column):
+    # Visualization: Histogram
+    st.subheader("Visualization: Histogram")
+    plt.figure(figsize=(8, 6))
+    sns.histplot(data[target_column], kde=True)
+    plt.title(f'Distribution of {target_column}')
+    plt.xlabel(target_column)
+    plt.ylabel('Frequency')
+    st.pyplot(plt)
     return data[target_column].mean()
+
 
 # Function to perform clustering using K-Means
 def perform_clustering(data):
