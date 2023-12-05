@@ -27,7 +27,6 @@ def perform_classification(data, target_column):
     # Return predicted labels or probabilities
     return clf.predict(X)
 
-
 # Function to perform association rule mining
 def perform_association_rule_mining(data):
     # Assuming data is binary (0 or 1)
@@ -36,9 +35,9 @@ def perform_association_rule_mining(data):
     return rules
 
 # Function to perform regression using Random Forest
-def perform_regression(data):
-    X = data.drop('target_column', axis=1)  # Replace 'target_column' with your actual target column
-    y = data['target_column']
+def perform_regression(data, target_column):
+    X = data.drop(target_column, axis=1)  # Replace 'target_column' with your actual target column
+    y = data[target_column]
 
     reg = RandomForestRegressor()
     reg.fit(X, y)
@@ -53,13 +52,12 @@ def detect_outliers(data):
     return labels
 
 # Streamlit App
-# Streamlit App
 def main():
     st.title("Data Warehouse and Mining App")
 
     # Upload dataset
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
-    
+
     if uploaded_file is not None:
         # Read the dataset
         df = pd.read_csv(uploaded_file)
@@ -71,7 +69,7 @@ def main():
         # Data mining operation selection
         operation = st.selectbox("Select Data Mining Operation", ["Mean", "Clustering", "Classification", "Association Rule Mining", "Regression", "Outlier Detection"])
 
-        # User input for target column
+        # User input for target column (if applicable)
         if operation in ["Classification", "Regression"]:
             target_column = st.selectbox("Select Target Column", df.columns)
 
