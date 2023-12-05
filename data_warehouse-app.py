@@ -35,8 +35,8 @@ def perform_association_rule_mining(data):
     return rules
 
 # Function to perform regression using Random Forest
-def perform_regression(data, target_column):
-    X = data.drop(target_column, axis=1)  # Replace 'target_column' with your actual target column
+def perform_regression(data, target_column, independent_columns):
+    X = data[independent_columns]  # Use selected independent columns
     y = data[target_column]
 
     reg = RandomForestRegressor()
@@ -57,7 +57,7 @@ def main():
 
     # Upload dataset
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
-
+    
     if uploaded_file is not None:
         # Read the dataset
         df = pd.read_csv(uploaded_file)
@@ -69,9 +69,14 @@ def main():
         # Data mining operation selection
         operation = st.selectbox("Select Data Mining Operation", ["Mean", "Clustering", "Classification", "Association Rule Mining", "Regression", "Outlier Detection"])
 
-        # User input for target column (if applicable)
+        # User input for target column
         if operation in ["Classification", "Regression"]:
             target_column = st.selectbox("Select Target Column", df.columns)
+
+        # User input for independent columns (for regression)
+        independent_columns = []
+        if operation == "Regression":
+            independent_columns = st.multiselect("Select Independent Columns", df.columns)
 
         # Perform data mining operation
         if st.button("Perform Operation"):
@@ -84,7 +89,7 @@ def main():
             elif operation == "Association Rule Mining":
                 result = perform_association_rule_mining(df)
             elif operation == "Regression":
-                result = perform_regression(df, target_column)
+                result = perform_regression(df, target_column, independent_columns)
             elif operation == "Outlier Detection":
                 result = detect_outliers(df)
 
