@@ -60,14 +60,17 @@ def handle_missing_values(data, target_column, strategy, manual_value):
     return cleaned_data
 
 
-def perform_clustering(data, num_clusters,target_cluster):
-    X = target_cluster  # Select numerical columns for clustering
+# Modify the clustering function
+def perform_clustering(column_data, num_clusters):
+    # Reshape the data to a 2D array (required for KMeans)
+    X = column_data.values.reshape(-1, 1)
 
     # Perform KMeans clustering
     kmeans = KMeans(n_clusters=num_clusters, random_state=42)
     labels = kmeans.fit_predict(X)
 
     return labels
+
 
 
 # Streamlit App
@@ -229,12 +232,13 @@ def main():
                     num_clusters = st.slider("Select the number of clusters", min_value=2, max_value=10, value=3)
                    
             if st.button("Perform Operation", key="mining"):
-                    if operationM == "Clustering":
-                        result = perform_clustering(cleaned_df, num_clusters,target_cluster)
-                      # Display clustering results, e.g., cluster labels
+                   if operationM == "Clustering":
+                        # Get the column to perform clustering on
+                        # Perform clustering on the selected column
+                        result = perform_clustering(cleaned_df[target_cluster], num_clusters)
+                        # Display clustering results, e.g., cluster labels
                         st.subheader("Clustering Results:")
                         st.write(result)
-
             # elif operationM == "Classification":
 
 
