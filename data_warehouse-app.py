@@ -112,6 +112,12 @@ def main():
                 st.subheader("Updated Dataset:")
                 st.write(cleaned_df)
 
+
+            
+        else:
+            cleaned_df=df   
+
+
             # Data mining operation selection
             st.subheader("Data Visualization:")
             operation = st.selectbox("Select Data Visualizations:", ["Mean", "Regression", "Outlier Detection", "Pie Chart", "Bar Graph", "Box Plot"])
@@ -203,8 +209,10 @@ def main():
                 href = f'<a href="data:file/csv;base64,{b64}" download="cleaned_dataset.csv">Download Cleaned Dataset</a>'
                 st.markdown(href, unsafe_allow_html=True)
 
+
+            st.subheader("Data Mining:")
             # End the app
-            st.balloons()
+            # st.balloons()
 
 if __name__ == "__main__":
     main()
