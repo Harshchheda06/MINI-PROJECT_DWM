@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import OneClassSVM
 import matplotlib.pyplot as plt
 import seaborn as sns
+import base64
 
 # Function to perform a basic data mining operation (mean calculation)
 def calculate_mean(data, target_columns):
@@ -194,6 +195,13 @@ def main():
                 if operation != "Mean" and operation != "Regression":
                     st.subheader("Result:")
                     st.write(result)
+
+            # Add an option to download the cleaned dataset
+            if st.button("Download Cleaned Dataset"):
+                cleaned_df_csv = cleaned_df.to_csv(index=False)
+                b64 = base64.b64encode(cleaned_df_csv.encode()).decode()
+                href = f'<a href="data:file/csv;base64,{b64}" download="cleaned_dataset.csv">Download Cleaned Dataset</a>'
+                st.markdown(href, unsafe_allow_html=True)
 
             # End the app
             st.balloons()
