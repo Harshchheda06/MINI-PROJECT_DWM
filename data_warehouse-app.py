@@ -211,6 +211,17 @@ def main():
 
 
             st.subheader("Data Mining:")
+            operationM = st.selectbox("Select Data Visualizations:", ["Clustering", "Classification", "Association Rule"])
+            if operationM=="Clustering":
+
+
+            elif operationM == "Classification":
+
+
+            elif operationM =="Association Rule":
+
+                
+
             # End the app
             # st.balloons()
 
