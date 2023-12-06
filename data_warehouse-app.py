@@ -224,14 +224,16 @@ def main():
 
             st.subheader("Data Mining:")
             operationM = st.selectbox("Select Data Visualizations:", ["Clustering", "Classification", "Association Rule"])
-            if st.button("Perform Operation", key="mining"):
-                if operationM=="Clustering":
+            if operationM=="Clustering":
                     target_cluster = st.selectbox("Select Dependent Variable", cleaned_df.columns)
                     num_clusters = st.slider("Select the number of clusters", min_value=2, max_value=10, value=3)
-                    result = perform_clustering(cleaned_df, num_clusters,target_cluster)
+                   
+            if st.button("Perform Operation", key="mining"):
+                    if operationM == "Clustering":
+                        result = perform_clustering(cleaned_df, num_clusters,target_cluster)
                       # Display clustering results, e.g., cluster labels
-                    st.subheader("Clustering Results:")
-                    st.write(result)
+                        st.subheader("Clustering Results:")
+                        st.write(result)
 
             # elif operationM == "Classification":
 
