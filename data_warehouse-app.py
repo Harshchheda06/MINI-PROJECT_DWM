@@ -112,9 +112,12 @@ def main():
                 st.subheader("Updated Dataset:")
                 st.write(cleaned_df)
 
+
             
         else:
             cleaned_df=df   
+
+
             # Data mining operation selection
             st.subheader("Data Visualization:")
             operation = st.selectbox("Select Data Visualizations:", ["Mean", "Regression", "Outlier Detection", "Pie Chart", "Bar Graph", "Box Plot"])
