@@ -129,125 +129,107 @@ def main():
 
 
             
-        else:
-            cleaned_df=df   
-
-
-            # Data mining operation selection
-            st.subheader("Data Visualization:")
-            operation = st.selectbox("Select Data Visualizations:", ["Mean", "Regression", "Outlier Detection", "Pie Chart", "Bar Graph", "Box Plot"])
-
-            # User input for target column
+        
+        cleaned_df=df   
+        # Data mining operation selection
+        st.subheader("Data Visualization:")
+        operation = st.selectbox("Select Data Visualizations:", ["Mean", "Regression", "Outlier Detection", "Pie Chart", "Bar Graph", "Box Plot"])
+        # User input for target column
+        if operation == "Mean":
+            # Allow users to choose multiple columns for mean calculation
+            target_columns = st.multiselect("Select Columns for Mean Calculation", cleaned_df.columns)
+        # User input for regression variables
+        if operation == "Regression":
+            independent_variable = st.selectbox("Select Independent Variable", cleaned_df.columns)
+            dependent_variable = st.selectbox("Select Dependent Variable", cleaned_df.columns)
+        # User input for Pie Chart
+        if operation == "Pie Chart":
+            # Create Pie Chart for selected columns
+            pie_chart_columns = st.multiselect("Select Columns for Pie Chart", cleaned_df.columns)
+        # User input for Bar Graph
+        if operation == "Bar Graph":
+            # Create Bar Graph for selected columns
+            x_axis_column = st.selectbox("Select X-axis Column for Bar Graph", cleaned_df.columns)
+            y_axis_column = st.selectbox("Select Y-axis Column for Bar Graph", cleaned_df.columns)
+        # User input for Box Plot
+        if operation == "Box Plot":
+            # Create Box Plot for selected columns
+            box_plot_columns = st.multiselect("Select Columns for Box Plot", cleaned_df.columns)
+        # Initialize result variable
+        result = None
+        # Perform data mining operation
+        if st.button("Perform Operation"):
             if operation == "Mean":
-                # Allow users to choose multiple columns for mean calculation
-                target_columns = st.multiselect("Select Columns for Mean Calculation", cleaned_df.columns)
-
-            # User input for regression variables
-            if operation == "Regression":
-                independent_variable = st.selectbox("Select Independent Variable", cleaned_df.columns)
-                dependent_variable = st.selectbox("Select Dependent Variable", cleaned_df.columns)
-
-            # User input for Pie Chart
-            if operation == "Pie Chart":
+                result = calculate_mean(cleaned_df, target_columns)
+                # Display means in tabular form
+                st.subheader("Means for Selected Columns:")
+                st.write(result)
+            elif operation == "Regression":
+                result = perform_regression(cleaned_df, independent_variable, dependent_variable)
+                # Display regression line graph
+                st.subheader("Linear Regression Line Graph:")
+                fig, ax = plt.subplots(figsize=(8, 6))
+                sns.regplot(x=cleaned_df[independent_variable], y=result, scatter_kws={'s': 10, 'alpha': 0.3}, ax=ax)
+                plt.title(f'Linear Regression: {independent_variable} vs. Predicted {dependent_variable}')
+                plt.xlabel(independent_variable)
+                plt.ylabel(f'Predicted {dependent_variable}')
+                st.pyplot(fig)
+            elif operation == "Outlier Detection":
+                result = detect_outliers(cleaned_df)
+            elif operation == "Pie Chart":
                 # Create Pie Chart for selected columns
-                pie_chart_columns = st.multiselect("Select Columns for Pie Chart", cleaned_df.columns)
-
-            # User input for Bar Graph
-            if operation == "Bar Graph":
-                # Create Bar Graph for selected columns
-                x_axis_column = st.selectbox("Select X-axis Column for Bar Graph", cleaned_df.columns)
-                y_axis_column = st.selectbox("Select Y-axis Column for Bar Graph", cleaned_df.columns)
-
-            # User input for Box Plot
-            if operation == "Box Plot":
-                # Create Box Plot for selected columns
-                box_plot_columns = st.multiselect("Select Columns for Box Plot", cleaned_df.columns)
-
-            # Initialize result variable
-            result = None
-
-            # Perform data mining operation
-            if st.button("Perform Operation"):
-                if operation == "Mean":
-                    result = calculate_mean(cleaned_df, target_columns)
-                    # Display means in tabular form
-                    st.subheader("Means for Selected Columns:")
-                    st.write(result)
-                elif operation == "Regression":
-                    result = perform_regression(cleaned_df, independent_variable, dependent_variable)
-                    # Display regression line graph
-                    st.subheader("Linear Regression Line Graph:")
-                    fig, ax = plt.subplots(figsize=(8, 6))
-                    sns.regplot(x=cleaned_df[independent_variable], y=result, scatter_kws={'s': 10, 'alpha': 0.3}, ax=ax)
-                    plt.title(f'Linear Regression: {independent_variable} vs. Predicted {dependent_variable}')
-                    plt.xlabel(independent_variable)
-                    plt.ylabel(f'Predicted {dependent_variable}')
-                    st.pyplot(fig)
-                elif operation == "Outlier Detection":
-                    result = detect_outliers(cleaned_df)
-                elif operation == "Pie Chart":
-                    # Create Pie Chart for selected columns
-                    for col in pie_chart_columns:
-                        pie_chart_data = cleaned_df[col].value_counts()
-                        st.subheader(f"Pie Chart for Column '{col}':")
-                        fig, ax = plt.subplots()
-                        ax.pie(pie_chart_data, labels=pie_chart_data.index, autopct='%1.1f%%', startangle=90)
-                        ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-                        st.pyplot(fig)
-                elif operation == "Bar Graph":
-                    # Create Bar Graph for selected columns
-                    bar_graph_data = cleaned_df.groupby(x_axis_column)[y_axis_column].count()
-                    st.subheader(f"Bar Graph: {y_axis_column} vs. {x_axis_column}")
+                for col in pie_chart_columns:
+                    pie_chart_data = cleaned_df[col].value_counts()
+                    st.subheader(f"Pie Chart for Column '{col}':")
                     fig, ax = plt.subplots()
-                    bar_graph_data.plot(kind='bar', ax=ax)
-                    plt.title(f'Bar Graph: {y_axis_column} vs. {x_axis_column}')
-                    plt.xlabel(x_axis_column)
-                    plt.ylabel('Count')
+                    ax.pie(pie_chart_data, labels=pie_chart_data.index, autopct='%1.1f%%', startangle=90)
+                    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
                     st.pyplot(fig)
-                elif operation == "Box Plot":
-                    # Create Box Plot for selected columns
-                    for col in box_plot_columns:
-                        st.subheader(f"Box Plot for Column '{col}':")
-                        fig, ax = plt.subplots()
-                        sns.boxplot(x=cleaned_df[col], ax=ax)
-                        plt.title(f'Box Plot: {col}')
-                        st.pyplot(fig)
-
-                if operation != "Mean" and operation != "Regression":
-                    st.subheader("Result:")
+            elif operation == "Bar Graph":
+                # Create Bar Graph for selected columns
+                bar_graph_data = cleaned_df.groupby(x_axis_column)[y_axis_column].count()
+                st.subheader(f"Bar Graph: {y_axis_column} vs. {x_axis_column}")
+                fig, ax = plt.subplots()
+                bar_graph_data.plot(kind='bar', ax=ax)
+                plt.title(f'Bar Graph: {y_axis_column} vs. {x_axis_column}')
+                plt.xlabel(x_axis_column)
+                plt.ylabel('Count')
+                st.pyplot(fig)
+            elif operation == "Box Plot":
+                # Create Box Plot for selected columns
+                for col in box_plot_columns:
+                    st.subheader(f"Box Plot for Column '{col}':")
+                    fig, ax = plt.subplots()
+                    sns.boxplot(x=cleaned_df[col], ax=ax)
+                    plt.title(f'Box Plot: {col}')
+                    st.pyplot(fig)
+            if operation != "Mean" and operation != "Regression":
+                st.subheader("Result:")
+                st.write(result)
+        # Add an option to download the cleaned dataset
+        if st.button("Download Cleaned Dataset"):
+            cleaned_df_csv = cleaned_df.to_csv(index=False)
+            b64 = base64.b64encode(cleaned_df_csv.encode()).decode()
+            href = f'<a href="data:file/csv;base64,{b64}" download="cleaned_dataset.csv">Download Cleaned Dataset</a>'
+            st.markdown(href, unsafe_allow_html=True)
+        st.subheader("Data Mining:")
+        operationM = st.selectbox("Select Data Visualizations:", ["Clustering", "Classification", "Association Rule"])
+        if operationM=="Clustering":
+                target_cluster = st.selectbox("Select Dependent Variable", cleaned_df.columns)
+                num_clusters = st.slider("Select the number of clusters", min_value=2, max_value=10, value=3)
+               
+        if st.button("Perform Operation", key="mining"):
+               if operationM == "Clustering":
+                    # Get the column to perform clustering on
+                    # Perform clustering on the selected column
+                    result = perform_clustering(cleaned_df[target_cluster], num_clusters)
+                    # Display clustering results, e.g., cluster labels
+                    st.subheader("Clustering Results:")
                     st.write(result)
-
-            # Add an option to download the cleaned dataset
-            if st.button("Download Cleaned Dataset"):
-                cleaned_df_csv = cleaned_df.to_csv(index=False)
-                b64 = base64.b64encode(cleaned_df_csv.encode()).decode()
-                href = f'<a href="data:file/csv;base64,{b64}" download="cleaned_dataset.csv">Download Cleaned Dataset</a>'
-                st.markdown(href, unsafe_allow_html=True)
-
-
-            st.subheader("Data Mining:")
-            operationM = st.selectbox("Select Data Visualizations:", ["Clustering", "Classification", "Association Rule"])
-            if operationM=="Clustering":
-                    target_cluster = st.selectbox("Select Dependent Variable", cleaned_df.columns)
-                    num_clusters = st.slider("Select the number of clusters", min_value=2, max_value=10, value=3)
-                   
-            if st.button("Perform Operation", key="mining"):
-                   if operationM == "Clustering":
-                        # Get the column to perform clustering on
-                        # Perform clustering on the selected column
-                        result = perform_clustering(cleaned_df[target_cluster], num_clusters)
-                        # Display clustering results, e.g., cluster labels
-                        st.subheader("Clustering Results:")
-                        st.write(result)
-            # elif operationM == "Classification":
-
-
-            # elif operationM =="Association Rule":
-
-
-
-            # End the app
-            # st.balloons()
+        # elif operationM == "Classification":
+        # elif operationM =="Association Rule":
+        # End the app
+        # st.balloons()
 
 if __name__ == "__main__":
     main()
