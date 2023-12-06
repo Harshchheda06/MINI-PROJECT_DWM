@@ -8,6 +8,17 @@ import seaborn as sns
 
 # Function to perform a basic data mining operation (mean calculation)
 def calculate_mean(data, target_columns):
+    # Display histogram for selected columns
+    for col in target_columns:
+        st.subheader(f"Histogram for Column '{col}':")
+        fig, ax = plt.subplots()
+        data[col].hist(bins=20, ax=ax)
+        plt.title(f'Histogram: {col}')
+        plt.xlabel(col)
+        plt.ylabel('Frequency')
+        st.pyplot(fig)
+
+    # Calculate and return mean
     return data[target_columns].mean()
 
 # Function to perform regression using Random Forest
