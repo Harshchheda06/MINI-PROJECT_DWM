@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import OneClassSVM
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import seaborn as sns
 import base64
@@ -57,6 +58,17 @@ def handle_missing_values(data, target_column, strategy, manual_value):
         cleaned_data[target_column] = cleaned_data[target_column].fillna(most_common_value)
 
     return cleaned_data
+
+
+def perform_clustering(data, num_clusters,target_cluster):
+    X = target_cluster  # Select numerical columns for clustering
+
+    # Perform KMeans clustering
+    kmeans = KMeans(n_clusters=num_clusters, random_state=42)
+    labels = kmeans.fit_predict(X)
+
+    return labels
+
 
 # Streamlit App
 def main():
@@ -212,15 +224,21 @@ def main():
 
             st.subheader("Data Mining:")
             operationM = st.selectbox("Select Data Visualizations:", ["Clustering", "Classification", "Association Rule"])
-            if operationM=="Clustering":
+            if st.button("Perform Operation", key="mining"):
+                if operationM=="Clustering":
+                    target_cluster = st.selectbox("Select Dependent Variable", cleaned_df.columns)
+                    num_clusters = st.slider("Select the number of clusters", min_value=2, max_value=10, value=3)
+                    result = perform_clustering(cleaned_df, num_clusters,target_cluster)
+                      # Display clustering results, e.g., cluster labels
+                    st.subheader("Clustering Results:")
+                    st.write(result)
+
+            # elif operationM == "Classification":
 
 
-            elif operationM == "Classification":
+            # elif operationM =="Association Rule":
 
 
-            elif operationM =="Association Rule":
-
-                
 
             # End the app
             # st.balloons()
