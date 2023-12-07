@@ -7,6 +7,8 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import seaborn as sns
 import base64
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
 
 # Function to perform a basic data mining operation (mean calculation)
 def calculate_mean(data, target_columns):
@@ -70,6 +72,9 @@ def perform_clustering(column_data, num_clusters):
     labels = kmeans.fit_predict(X)
 
     return labels
+
+
+
 
 
 
@@ -219,7 +224,7 @@ def main():
                 num_clusters = st.slider("Select the number of clusters", min_value=2, max_value=10, value=3)
                
         if st.button("Perform Operation", key="mining"):
-               if operationM == "Clustering":
+                if operationM == "Clustering":
                     # Get the column to perform clustering on
                     # Perform clustering on the selected column
                     result = perform_clustering(cleaned_df[target_cluster], num_clusters)
@@ -227,9 +232,49 @@ def main():
                     st.subheader("Clustering Results:")
                     st.write(result)
         # elif operationM == "Classification":
-        # elif operationM =="Association Rule":
-        # End the app
-        # st.balloons()
+                elif operationM == "Association Rule":
+                    # Specify the path to the CSV file
+                    file_path = "DataSetA 1.csv"
+                
+                    # Load dataset
+                    transactions = cleaned_df
+                
+                    # Print the column indices of your transactions DataFrame
+                    print("Column Indices:", transactions.columns)
+                
+                    # If the column indices are not integers starting from 0, reset them
+                    transactions.reset_index(drop=True, inplace=True)
+                
+                    # Replace NaN values with an empty string (you can choose a different placeholder)
+                    transactions.fillna('', inplace=True)
+                
+                    # Create a copy of the DataFrame for Association Rule mining
+                    df = transactions.copy()
+                
+                    # Initialize TransactionEncoder
+                    te = TransactionEncoder()
+                
+                    # Fit and transform the transactions
+                    te_ary = te.fit(df.values).transform(df.values)
+                
+                    # Create a DataFrame with the transformed data
+                    df = pd.DataFrame(te_ary, columns=te.columns_)
+                
+                    st.subheader("Original Transactions:")
+                    st.write(cleaned_df)
+                
+                    frequent_itemsets = apriori(df, min_support=0.2, use_colnames=True)
+                
+                    st.subheader("Frequent Itemsets:")
+                    st.write(frequent_itemsets)
+                
+                    rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.7)
+                
+                    st.subheader("Association Rules:")
+                    st.write(rules)
+                
+                         # End the app
+                                # st.balloons()
 
-if __name__ == "__main__":
-    main()
+if __name__     == "__main__":
+    main()  
