@@ -218,7 +218,7 @@ def main():
             href = f'<a href="data:file/csv;base64,{b64}" download="cleaned_dataset.csv">Download Cleaned Dataset</a>'
             st.markdown(href, unsafe_allow_html=True)
         st.subheader("Data Mining:")
-        operationM = st.selectbox("Select Data Visualizations:", ["Clustering", "Classification", "Association Rule"])
+        operationM = st.selectbox("Select Data Visualizations:", ["Clustering", "Association Rule"])
         if operationM=="Clustering":
                 target_cluster = st.selectbox("Select Dependent Variable", cleaned_df.columns)
                 num_clusters = st.slider("Select the number of clusters", min_value=2, max_value=10, value=3)
